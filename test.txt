@@ -1,0 +1,36 @@
+from pybricks.pupdevices import Motor, UltrasonicSensor
+from pybricks.hubs import PrimeHub
+from pybricks.parameters import Port, Stop, Direction
+from pybricks.tools import wait, StopWatch
+
+hub = PrimeHub()
+rear_motor = Motor(Port.E, Direction.CLOCKWISE)
+front_motor = Motor(Port.F, Direction.COUNTERCLOCKWISE)
+watch = StopWatch() 
+
+hub.display.number(69)
+hub.imu.reset_heading(0)
+
+
+rear_motor.control.limits(acceleration=1000)
+front_motor.control.limits(acceleration=1000)
+
+def drive(rear_motor_speed, front_motor_speed):
+    rear_motor.run(rear_motor_speed)
+    front_motor.run(front_motor_speed)
+
+def turn(target_angle, speed):
+    current_angle = hub.imu.heading()
+    direction = 1 if target_angle > current_angle else -1
+
+    while abs(hub.imu.heading() - target_angle) > 1:  # 1 degree tolerance
+        rear_motor.run(direction * speed)
+        front_motor.run(-direction * speed)
+    
+    rear_motor.stop()
+    front_motor.stop()
+
+    
+watch.reset()
+#while watch.time() < 7000:
+turn(90, 300)
