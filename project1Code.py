@@ -20,8 +20,10 @@ left.control.limits(acceleration=1000)
 right.control.limits(acceleration=1000)
 
 #make it drive only 1 meter forward
-def drive():
-    drive_base
+def drive(tiles):
+    meters = 304.8
+    distance = tiles*meters
+    driver.straight(distance)
 
 #make it to turn a perfect 90 
 def turn(target_angle, speed):
@@ -35,9 +37,18 @@ def turn(target_angle, speed):
     left.stop()
     right.stop()
     hub.imu.reset_heading(0)
-
-    
+   
 watch.reset()
-# while watch.time() < 3000:
-driver.straight(348)
+#while watch.time() < 7000:
+drive(3)
 turn(90, 69)
+hub.speaker.beep()
+drive(1)
+turn(-90, 69)
+drive(2)
+turn(-90, 69)
+drive(1)
+turn(90, 69)
+drive(1)
+
+
