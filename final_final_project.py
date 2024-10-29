@@ -30,16 +30,34 @@ def drive(tiles):
     driver.straight(distance)
 
 #make it to turn a perfect 90 
-def turn(target_angle, speed=69):
-    current_angle = hub.imu.heading()
-    direction = 1 if target_angle < current_angle else -1
+# def turn(target_angle, speed=69):
+#     current_angle = hub.imu.heading()
+#     direction = 1 if target_angle < current_angle else -1
 
-    while abs(hub.imu.heading() - target_angle) > 1:  # 1 degree tolerance
-        left.run(direction * speed)
-        right.run(-direction * speed)
+#     while abs(hub.imu.heading() - target_angle) > 1:  # 1 degree tolerance
+#         left.run(direction * speed)
+#         right.run(-direction * speed)
     
-    left.stop()
-    right.stop()
+#     left.stop()
+#     right.stop()
+#     hub.imu.reset_heading(0)
+
+def turn(target_angle, speed=100):
+    current_angle = hub.imu.heading()
+    wheel_circumference = umath.pi * 56  
+    turn_distance = (target_angle / 360) * (umath.pi * 161.29)  
+
+    motor_degrees = (turn_distance / wheel_circumference) * 360
+
+    #left
+    if target_angle == 90:
+        left.run_angle(-speed, motor_degrees, Stop.HOLD, wait=False)
+        right.run_angle(speed, motor_degrees, Stop.HOLD, wait=True)
+    #right 
+    elif target_angle == -90:
+        # Right turn: Left motor moves forward, right motor moves backward
+        left.run_angle(-speed, motor_degrees, Stop.HOLD, wait=False)
+        right.run_angle(speed, motor_degrees, Stop.HOLD, wait=True)
     hub.imu.reset_heading(0)
    ###########################################################################
 
@@ -128,4 +146,5 @@ def main():
     #2down, 2right
 
 main()
+
 watch.reset()
